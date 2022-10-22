@@ -489,6 +489,31 @@ def get_text_messages(message):
         btn1 = types.KeyboardButton('🔙 Главное меню')
         markup.add(btn1)
         bot.send_message(message.from_user.id, '📲 Чтобы перейти к поиску перейди по [ссылке](https://space4kids.ru/search/)', reply_markup=markup, parse_mode='Markdown')
+
+    #Small talk
+    elif message.text == 'Привет!':
+        bot.send_message(message.from_user.id, 'Привет!')
+
+    elif message.text == 'привет!':
+        bot.send_message(message.from_user.id, 'Привет!')
+
+    elif message.text == 'привет':
+        bot.send_message(message.from_user.id, 'Привет!')
+
+    elif message.text == 'как дела?':
+        bot.send_message(message.from_user.id, 'Хорошо!')
+
+    elif message.text == 'Как дела?':
+        bot.send_message(message.from_user.id, 'Хорошо!')
+
+    elif message.text == 'Что делаешь?':
+        bot.send_message(message.from_user.id, 'Помогаю людям!')
+
+    elif message.text == 'что делаешь?':
+        bot.send_message(message.from_user.id, 'Помогаю людям!')
+
+    elif message.text == 'как дела':
+        bot.send_message(message.from_user.id, 'Хорошо!')
     
     
     #English Language
