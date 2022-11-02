@@ -2,10 +2,10 @@ import telebot
 from telebot import types
 import random
 from random import choice
+import menu
 
 
 bot = telebot.TeleBot('BOT-TOKEN')
-
 
 spacefacts = ['Солнце в 300 000 раз больше, чем наша планета Земля', 'Солнце полностью проворачивается вокруг своей оси за 25-35 дней', 'Земля, Марс, Меркурий и Венера также называются «внутренними планетами», так как расположены ближе всего к Солнцу',
 'Солнце теряет до 1 000 000 тонн своей массы каждую секунду из-за солнечного ветра', 'Меркурий и Венера уникальны тем, что у них отсутствуют какие-либо спутники', 'На Меркурии нет атмосферы, а значит ветра или какой-либо другой погоды',
@@ -38,34 +38,27 @@ spacefacts = ['Солнце в 300 000 раз больше, чем наша пл
 
 @bot.message_handler(commands=['start']) #стартовая команда
 def start(message):
-
+# Стартовое меню, выбор языка
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("🇷🇺 Русский")
     btn2 = types.KeyboardButton('🇬🇧 English')
     markup.add(btn1, btn2)
-    bot.send_message(message.from_user.id, "🇷🇺 Выберите язык / 🇬🇧 Choose your language", reply_markup=markup)
-
+    send_message = (f'<b>Привет {message.from_user.first_name} {message.from_user.last_name} 🇷🇺 Выберите язык / 🇬🇧 Choose your language')
+    bot.send_message(message.chat.id, send_message, parse_mode='html', reply_markup=markup)
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
+    final_message = "" # Переменная для финального сообщения после обработки
+    # get_message_bot = message.text.strip().lower() # Считывает ввод в нижнем регистре
 
-    #Русский язык
+# Стартовое меню для RU
     if message.text == '🇷🇺 Русский':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton("🇷🇺 Российский космос")
-        btn2 = types.KeyboardButton('📰 Новости')
-        btn3 = types.KeyboardButton('📁 Проекты и мероприятия')
-        btn4 = types.KeyboardButton('📚 Знания')
-        btn5 = types.KeyboardButton('💻 Навигация профессий')
-        btn6 = types.KeyboardButton('👩🏻‍🏫 Учителю')
-        btn7 = types.KeyboardButton('🎬 Медиа')
-        btn8 = types.KeyboardButton('🔎 Поиск')
-        btn9 = types.KeyboardButton('👀 Ты этого точно не знал!')
-        btn10 = types.KeyboardButton('🔙 Вернуться к выбору языка')
-        markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width = 3)
+        markup.add(*main_menu.values())
         bot.send_message(message.from_user.id, "👋 Вас приветствует бот для сайта Space4Kids", reply_markup=markup)
         bot.send_message(message.from_user.id, '👀 Выберите интересующий вас раздел')
 
+# Возврат к выбору языка
     elif message.text == '🔙 Вернуться к выбору языка':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = types.KeyboardButton("🇷🇺 Русский")
@@ -73,415 +66,84 @@ def get_text_messages(message):
         markup.add(btn1, btn2)
         bot.send_message(message.from_user.id, "🇷🇺 Выберите язык / 🇬🇧 Choose your language", reply_markup=markup)
 
-    elif message.text == '👀 Ты этого точно не знал!':
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
+# Переход в главное меню
+    elif message.text == '🔙 Главное меню':
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width = 3)
+        markup.add(*main_menu.values())
+        bot.send_message(message.from_user.id, '👀 Выберите интересующий вас раздел')
 
+# Случайные факты
+    elif message.text == '👀 Ты этого точно не знал!':
+        for _i in range(10):
+            bot.send_message(message.from_user.id, random.choice(spacefacts))
+
+# Меню "Российский космос"
     elif message.text == '🇷🇺 Российский космос':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('📚 История')
-        btn2 = types.KeyboardButton('💻 Техника')
-        btn3 = types.KeyboardButton('🚀 Космодромы')
-        btn4 = types.KeyboardButton('👨‍🚀 Космонавты')
-        btn5 = types.KeyboardButton('👍🏻 Следуй за космонавтом')
-        btn6 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1, btn2, btn3, btn4, btn5, btn6)
+        markup.add(*menu.russian_space.values(), main_button)
         bot.send_message(message.from_user.id, '⬇ Выберите подраздел', reply_markup=markup)
 
-    elif message.text == '📚 История':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 История\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/140/)', reply_markup=markup, parse_mode='Markdown')
+# Подменю "Российский космос"
+    elif message.text in menu.russian_space_sub:
+        markup = types.InlineKeyboardMarkup()
+        final_message = menu.russian_space_sub[message.text], reply_markup=markup, parse_mode='Markdown'
 
-    elif message.text == '💻 Техника':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 💻 Техника\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/138/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🚀 Космодромы':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🚀 Космодромы\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/139/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '👨‍🚀 Космонавты':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 👨‍🚀 Космонавты\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/40/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '👍🏻 Следуй за космонавтом':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 👍🏻 Следуй за космонавтом\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/131/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔙 Главное меню':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton("🇷🇺 Российский космос")
-        btn2 = types.KeyboardButton('📰 Новости')
-        btn3 = types.KeyboardButton('📁 Проекты и мероприятия')
-        btn4 = types.KeyboardButton('📚 Знания')
-        btn5 = types.KeyboardButton('💻 Навигация профессий')
-        btn6 = types.KeyboardButton('👩🏻‍🏫 Учителю')
-        btn7 = types.KeyboardButton('🎬 Медиа')
-        btn8 = types.KeyboardButton('🔎 Поиск')
-        btn9 = types.KeyboardButton('👀 Ты этого точно не знал!')
-        btn10 = types.KeyboardButton('🔙 Вернуться к выбору языка')
-        markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10)
-        bot.send_message(message.from_user.id, "👀 Выбери интересующий раздел", reply_markup=markup)
-
+# Новости
     elif message.text == '📰 Новости':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = types.KeyboardButton('🔙 Главное меню')
         markup.add(btn1)
         bot.send_message(message.from_user.id, 'Твой раздел: 📰 Новости\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/101/)', reply_markup=markup, parse_mode='Markdown')
-    
+
+# Меню "Проекты и мероприятия"
     elif message.text == '📁 Проекты и мероприятия':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn01 = types.KeyboardButton('🔙 Главное меню')
-        btn1 = types.KeyboardButton('🔎 Кванториум')
-        btn2 = types.KeyboardButton('🔎 Сириус')
-        btn3 = types.KeyboardButton('🔎 Университетская гимнаязия МГУ')
-        btn4 = types.KeyboardButton('🔎 Центр космонавтика и авиация')
-        btn5 = types.KeyboardButton('🔎 Космический класс')
-        btn6 = types.KeyboardButton('🔎 Космические смены')
-        btn7 = types.KeyboardButton('🔎 Программа "Универсат"')
-        btn8 = types.KeyboardButton('🔎 Cansat Russia')
-        btn9 = types.KeyboardButton('🔎 Проект космический урок')
-        btn10 = types.KeyboardButton('🔎 World skills Russia')
-        btn11 = types.KeyboardButton('🔎 Билет в будующее')
-        btn12 = types.KeyboardButton('🔎 ПроеКТОриЯ')
-        btn13 = types.KeyboardButton('🔎 Форумная кампания')
-        btn14 = types.KeyboardButton('🔎 Космофест Восточный')
-        btn15 = types.KeyboardButton('🔎 КосмоСтарт')
-        btn16 = types.KeyboardButton('🔎 Олимпиада НТИ')
-        btn17 = types.KeyboardButton('🔎 Дежурный по планете')
-        btn18 = types.KeyboardButton('🔎 Космический рейс')
-        btn19 = types.KeyboardButton('🔎 Nauka 0+')
-        btn20 = types.KeyboardButton('🔎 Профстажировка.рф 2.0')
-        btn21 = types.KeyboardButton('🔎 Неделя без турникетов')
-        btn22 = types.KeyboardButton('🔎 Космос')
-        btn23 = types.KeyboardButton('🔎 Самбо в школу')
-        btn24 = types.KeyboardButton('🔎 Лунная одиссея')
-        btn25 = types.KeyboardButton('🔎 Большая перемена')
-        markup.add(btn01, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, btn13, btn14, btn15, btn16, btn17, btn18, btn19,
-        btn20, btn21, btn22, btn23, btn24, btn25)
+        markup.add(*menu.projects.values(), main_button)
         bot.send_message(message.from_user.id, '⬇ Выберите подраздел', reply_markup=markup)
 
-    elif message.text == '🔎 Кванториум':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Кванториум\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/473/)', reply_markup=markup, parse_mode='Markdown')
+# Подменю "Проекты и мероприятия"
+    elif message.text in menu.projects_sub:
+        markup = types.InlineKeyboardMarkup()
+        final_message = menu.projects_sub[message.text], reply_markup=markup, parse_mode='Markdown'
 
-    elif message.text == '🔎 Сириус':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Сириус\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/474/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Университетская гимназия МГУ':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Университетская гимназия МГУ\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/475/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Центр космонавтика и авиация':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Университетская гимназия МГУ\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/117/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Космический класс':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Космический класс\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/477/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Космические смены':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Космические смены\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/478/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Программа "Универсат"':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Программа "Универсат"\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/482/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Cansat Russia':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Cansat Russia\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/479/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Проект космический урок':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Проект космический урок\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/490/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 World skills Russia':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 World skills Russia\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/476/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Билет в будующее':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Билет в будующее\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/486/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 ПроеКТОриЯ':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 ПроеКТОриЯ\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/480/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Форумная кампания':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Форумная кампания\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/487/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Космофест Восточный':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Космофест Восточный\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/483/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 КосмоСтарт':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 КосмоСтарт\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/484/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Олимпиада НТИ':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Олимпиада НТИ\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/485/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Дежурный по планете':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Дежурный по планете\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/488/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Nauka 0+':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Nauka 0+\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/576/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Профстажировка.рф 2.0':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Профстажировка.рф 2.0\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/481/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Неделя без турникетов':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Неделя без турникетов\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/573/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Космос':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Космос\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/489/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Самбо в школу':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Самбо в школу\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/491/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Лунная одиссея':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Лунная одиссея\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/1186/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🔎 Большая перемена':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🔎 Большая перемена\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/1714/)', reply_markup=markup, parse_mode='Markdown')
-
+# Меню "Знания"
     elif message.text == '📚 Знания':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn01 = types.KeyboardButton('🔙 Главное меню')
-        btn1 = types.KeyboardButton('📚 Лекции')
-        btn2 = types.KeyboardButton('📚 Книги')
-        btn3 = types.KeyboardButton('📚 Документальные фильмы')
-        btn4 = types.KeyboardButton('📚 Телепередачи')
-        btn5 = types.KeyboardButton('📚 Художественные фильмы')
-        btn6 = types.KeyboardButton('📚 Мультфильмы')
-        btn7 = types.KeyboardButton('📚 Доступно о космосе')
-        btn8 = types.KeyboardButton('📚 Журналы')
-        markup.add(btn01, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8)
+        markup.add(*menu.knowledge.values(), main_button)
         bot.send_message(message.from_user.id, '⬇ Выберите подраздел', reply_markup=markup)
-    
-    elif message.text == '📚 Лекции':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Лекции\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/118/)', reply_markup=markup, parse_mode='Markdown')
 
-    elif message.text == '📚 Книги':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Книги\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/127/)', reply_markup=markup, parse_mode='Markdown')
-    
-    elif message.text == '📚 Документальные фильмы':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Документальные фильмы\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/126/)', reply_markup=markup, parse_mode='Markdown')
+# Подменю "Знания и мероприятия"
+    elif message.text in menu.knowledge_sub:
+        markup = types.InlineKeyboardMarkup()
+        final_message = menu.knowledge_sub[message.text], reply_markup=markup, parse_mode='Markdown'
 
-    elif message.text == '📚 Телепередачи':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Телепередачи\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/128/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '📚 Художественные фильмы':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Художественные фильмы\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/656/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '📚 Мультфильмы':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Мультфильмы\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/1753/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '📚 Доступно о космосе':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Доступно о космосе\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/125/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '📚 Журналы':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Журналы\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/980/)', reply_markup=markup, parse_mode='Markdown')
-
+# Меню "Навигация профессий"
     elif message.text == '💻 Навигация профессий':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn01 = types.KeyboardButton('🔙 Главное меню')
-        btn1 = types.KeyboardButton("🛠 Каталог профессий")
-        btn2 = types.KeyboardButton('🛠 Образовательные организации')
-        btn3 = types.KeyboardButton('🛠 Организации госкорпарации "Роскосмос"')
-        btn4 = types.KeyboardButton('🛠 Профориентационное тестирование')
-        markup.add(btn01, btn1, btn2, btn3, btn4)
+        markup.add(*menu.profession.values(), main_button)
         bot.send_message(message.from_user.id, '⬇ Выберите подраздел', reply_markup=markup)
 
-    elif message.text == '🛠 Каталог профессий':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🛠 Каталог профессий\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/108/)', reply_markup=markup, parse_mode='Markdown')
-    
-    elif message.text == '🛠 Образовательные организации':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🛠 Образовательные организации\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/110/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '🛠 Организации госкорпарации "Роскосмос"':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🛠 Организации госкорпарации "Роскосмос"\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/950/)', reply_markup=markup, parse_mode='Markdown')
-    
-    elif message.text == '🛠 Профориентационное тестирование':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 🛠 Профориентационное тестирование\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/112/)', reply_markup=markup, parse_mode='Markdown')
-
+# Подменю "Навигация профессий"
+    elif message.text in menu.profession_sub:
+        markup = types.InlineKeyboardMarkup()
+        final_message = menu.profession_sub[message.text], reply_markup=markup, parse_mode='Markdown'
+   
+# Меню "Учителю"
     elif message.text == '👩🏻‍🏫 Учителю':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn01 = types.KeyboardButton('🔙 Главное меню')
-        btn1 = types.KeyboardButton('📚 Концепция программ "Космический класс"')
-        btn2 = types.KeyboardButton('📚 Методические материалы')
-        btn3 = types.KeyboardButton('📚 Музеи и центры просвещения')
-        btn4 = types.KeyboardButton('📚 Олимпиады и конкурсы')
-        btn5 = types.KeyboardButton('📚 Проектная деятельность')
-        btn6 = types.KeyboardButton('📚 Уроки и эксперименты')
-        btn7 = types.KeyboardButton('📚 Плакаты и постеры')
-        markup.add(btn01, btn1, btn2, btn3, btn4)
-        bot.send_message(message.from_user.id, '⬇ Выберите подраздел', reply_markup=markup)
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+            markup.add(*menu.teacher.values(), main_button)
+            bot.send_message(message.from_user.id, '⬇ Выберите подраздел', reply_markup=markup)
 
-    elif message.text == '📚 Концепция программ "Космический класс"':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Концепция программ "Космический класс"\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/120/)', reply_markup=markup, parse_mode='Markdown')
+# Подменю "Учителю"
+    elif message.text in menu.teacher_sub:
+        markup = types.InlineKeyboardMarkup()
+        final_message = menu.teacher_sub[message.text], reply_markup=markup, parse_mode='Markdown'
 
-    elif message.text == '📚 Методические материалы':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Методические материалы\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/121/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '📚 Музеи и центры просвещения':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Музеи и центры просвещения\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/122/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '📚 Олимпиады и конкурсы':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Олимпиады и конкурсы\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/124/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '📚 Проектная деятельность':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Проектная деятельность\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/880/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '📚 Уроки и эксперименты':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Уроки и эксперименты\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/881/)', reply_markup=markup, parse_mode='Markdown')
-
-    elif message.text == '📚 Плакаты и постеры':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('🔙 Главное меню')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, 'Твой раздел: 📚 Плакаты и постеры\n \n👍🏻 Хороший выбор\n \n📲 Перейти к разделу можно по' + ' [ссылке](https://space4kids.ru/1707/)', reply_markup=markup, parse_mode='Markdown')
-
+# Меню "Медиа"
     elif message.text == '🎬 Медиа':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn01 = types.KeyboardButton('🔙 Главное меню')
-        btn1 = types.KeyboardButton('📷 Фото')
-        btn2 = types.KeyboardButton('📷 Видео')
-        btn3 = types.KeyboardButton('📷 Интерактив')
-        markup.add(btn01, btn1, btn2, btn3)
-        bot.send_message(message.from_user.id, '⬇ Выберите подраздел', reply_markup=markup)
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+            markup.add(*menu.media.values(), main_button)
+            bot.send_message(message.from_user.id, '⬇ Выберите подраздел', reply_markup=markup)
 
     #🔎 Поиск
     elif message.text == '🔎 Поиск':
@@ -491,28 +153,13 @@ def get_text_messages(message):
         bot.send_message(message.from_user.id, '📲 Чтобы перейти к поиску перейди по [ссылке](https://space4kids.ru/search/)', reply_markup=markup, parse_mode='Markdown')
 
     #Small talk
-    elif message.text == 'Привет!':
+    elif message.text.lower() == 'привет!' or message.text.lower() == 'привет':
         bot.send_message(message.from_user.id, 'Привет!')
 
-    elif message.text == 'привет!':
-        bot.send_message(message.from_user.id, 'Привет!')
-
-    elif message.text == 'привет':
-        bot.send_message(message.from_user.id, 'Привет!')
-
-    elif message.text == 'как дела?':
-        bot.send_message(message.from_user.id, 'Хорошо!')
-
-    elif message.text == 'Как дела?':
-        bot.send_message(message.from_user.id, 'Хорошо!')
-
-    elif message.text == 'Что делаешь?':
+    elif message.text.lower() == 'что делаешь?':
         bot.send_message(message.from_user.id, 'Помогаю людям!')
 
-    elif message.text == 'что делаешь?':
-        bot.send_message(message.from_user.id, 'Помогаю людям!')
-
-    elif message.text == 'как дела':
+    elif message.text.lower() == 'как дела?' or message.text.lower() == 'как дела':
         bot.send_message(message.from_user.id, 'Хорошо!')
     
     
