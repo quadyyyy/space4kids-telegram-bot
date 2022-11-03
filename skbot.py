@@ -247,7 +247,8 @@ def get_text_messages(message):
         markup.add(btn1)
         bot.send_message(message.from_user.id, '📲 To go to the search, follow the ' + '[link](https://space4kids.ru/search/)', reply_markup=markup, parse_mode='Markdown')
 
+# Отправка final_message
+    bot.send_message(message.chat.id, final_message, parse_mode='html', reply_markup=markup)    
 
-
-
-bot.polling(none_stop=True, interval=0) #обязательная для работы бота часть
+if __name__ == "__main__":
+    bot.polling(none_stop=True)
