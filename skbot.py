@@ -74,16 +74,8 @@ def get_text_messages(message):
         bot.send_message(message.from_user.id, "🇷🇺 Выберите язык / 🇬🇧 Choose your language", reply_markup=markup)
 
     elif message.text == '👀 Ты этого точно не знал!':
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
-        bot.send_message(message.from_user.id, random.choice(spacefacts))
+        for i in range(10):
+            bot.send_message(message.from_user.id, random.choice(spacefacts))
 
     elif message.text == '🇷🇺 Российский космос':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
