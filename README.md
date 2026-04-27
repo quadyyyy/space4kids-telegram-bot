@@ -1,21 +1,60 @@
-# 📚 space4kids-tg-bot
+# 🚀 Space4Kids Telegram Bot
 
-Telegram бот для SK Kids Challenge, написан полностью на python
+> A Telegram bot built for the **SK Kids Challenge**, designed to help users navigate the [space4kids.ru](https://space4kids.ru) website — with space facts, bilingual support, and small talk.
 
-Web-версия бота: https://t.me/Space4KidsBot
+**🏆 1st place winner at SK Kids Challenge**
 
-UPD: Бот занял первое место
+> [!NOTE]
+> The bot is currently offline. It was hosted at [@Space4KidsBot](https://t.me/Space4KidsBot).
 
-UPD2: Rest In Piece, бот отключен
+---
 
-# 👀 Функционал
+## ✨ Features
 
-Бот создан для помощи в навигации по разделам на сайте https://space4kids.ru, по кнопке выдает 10 случайных фактов о космосе, имеется поддержка двух языков
+### 🗺️ Site Navigation
+The bot acts as an interactive guide to [space4kids.ru](https://space4kids.ru), giving users quick access to all major sections and subsections via keyboard buttons — no need to browse the website manually.
 
-Есть поддержка small talk (бот отвечает на сообщения "Привет!", "Как дела?")
+### 🌌 Random Space Facts
+Hit the **"👀 Ты этого точно не знал!"** button and get 10 random space facts from a curated list of 60+ facts (Russian only).
 
-🇷🇺 Русский язык: Полный функционал, есть разделы и подразделы
+### 💬 Small Talk
+The bot responds to casual messages like greetings and simple questions:
+- `Привет!` → `Привет!`
+- `Как дела?` → `Хорошо!`
+- `Что делаешь?` → `Помогаю людям!`
 
-🇬🇧 Английский язык: Урезаный функционал (нет кнопки '👀 Ты этого точно не знал!'), есть разделы
+### 🌐 Bilingual Support
 
-Für SK Kids Challenge
+| Feature | 🇷🇺 Russian | 🇬🇧 English |
+|---|---|---|
+| Main sections | ✅ | ✅ |
+| Subsections | ✅ | ❌ |
+| Random space facts | ✅ | ❌ |
+| Small talk | ✅ | ❌ |
+
+---
+
+## 🛠️ Tech Stack
+
+- **Language:** Python 3
+- **Library:** [pyTelegramBotAPI](https://github.com/eternnoir/pyTelegramBotAPI) (`telebot`)
+- **Structure:**
+  - `skbot.py` — main bot logic, message handlers, space facts list
+  - `menu.py` — menu and submenu button definitions
+
+---
+
+## 📁 Project Structure
+
+```
+space4kids-telegram-bot/
+├── skbot.py       # Bot entry point — handlers, facts, logic
+├── menu.py        # Menu button definitions and submenu links
+└── README.md
+```
+
+---
+
+## 📄 License
+
+This project has no explicit license. Feel free to explore and learn from the code.
